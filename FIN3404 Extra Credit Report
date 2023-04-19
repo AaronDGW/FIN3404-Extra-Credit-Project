@@ -1,0 +1,78 @@
+Aaron D., Gage R., Jenny C.
+FIN3403
+Zicheng Xiao
+4/19/23
+Extra Credit Project
+we asked ChatGPT to create a python script code to identify industries that met the following criteria based on the example given:
+•	1. firms should have healthy accounting numbers, such as a current ratio above 3, interest coverage ratio above 4, 
+•	2. All firms should have high market price power, while also having good return on assets and return on equity. 
+•	3. choose among sectors that did well during periods of hyperinflation and economic recessions. 
+•	4. Set the volatility of the portfolio within 10% annually.
+The industries that met the four criteria were technology, finance, and consumer discretionary. To preface, we did not find any information as to what an abnormal return was from PowerPoint slides provided within course materials. As a result, we had to read some articles to get a general idea of what abnormal returns were to begin with. An article from Investopedia explains abnormal returns as a return that deviates from an investment’s expected return. Assuming deviation coincides with market volatility, we decided the most likely industry to generate an abnormal return would likely have high market volatility. Moving on, we asked ChatGPT to identify which of the three industries that met the above criteria was the most volatile with the following prompt:
+“Choose the most volatile industry among these industries: Technology, Finance, and Consumer Discretionary”
+	Of the three industries, Technology had the highest volatility. Afterwards, we asked ChatGPT to create an equity investment strategy centered around the technology industry following the criteria from the example given. We did not attempt any other strategies.
+
+
+
+
+
+Works Cited:
+https://www.investopedia.com/terms/a/abnormalreturn.asp
+ChatGPT Prompt: Choose the most volatile industry among these industries: Technology, Finance, and Consumer Discretionary
+
+import yfinance as yf
+import numpy as np
+
+# Fetch historical stock prices for firms in Technology, Finance, and Consumer Discretionary industries
+tech_firms = yf.download('AAPL MSFT NVDA', period='5y')
+finance_firms = yf.download('JPM', period='5y')
+consumer_discretionary_firms = yf.download('COST', period='5y')
+
+# Calculate historical volatility for each industry
+tech_volatility = np.std(tech_firms['Close'].pct_change()) * np.sqrt(252)
+finance_volatility = np.std(finance_firms['Close'].pct_change()) * np.sqrt(252)
+consumer_discretionary_volatility = np.std(consumer_discretionary_firms['Close'].pct_change()) * np.sqrt(252)
+
+# Determine the most volatile industry
+most_volatile_industry = max(tech_volatility, finance_volatility, consumer_discretionary_volatility)
+
+# Display the most volatile industry
+if most_volatile_industry == tech_volatility:
+    print("Technology industry is the most volatile.")
+elif most_volatile_industry == finance_volatility:
+    print("Finance industry is the most volatile.")
+else:
+    print("Consumer Discretionary industry is the most volatile.")
+ChatGPT Prompt: Create an Equity investment strategy centered around the Technology industry following these criteria: 1. firms should have healthy accounting numbers, such as a current ratio above 3, interest coverage ratio above 4, 
+•	2. All firms should have high market price power, while also having good return on assets and return on equity. 
+•	3. choose among sectors that did well during periods of hyperinflation and economic recessions. 
+•	4. Set the volatility of the portfolio within 10% annually Identify firms within the Technology industry that meet the following criteria and display a condensed version of the Python script used: 
+
+import yfinance as yf
+import pandas as pd
+
+# Fetch fundamental financial data for Technology firms
+technology_firms = yf.Ticker("sector ETFs XLK").sustainability
+
+# Filter firms based on accounting numbers
+filtered_firms = technology_firms[
+    (technology_firms['currentRatio'] > 3) &
+    (technology_firms['interestCoverage'] > 4)
+]
+
+# Filter firms based on market price power, return on assets, and return on equity
+filtered_firms = filtered_firms[
+    (filtered_firms['marketCapitalization'] > filtered_firms['marketCapitalization'].median()) &
+    (filtered_firms['returnOnAssets'] > 0.1) &
+    (filtered_firms['returnOnEquity'] > 0.1)
+]
+
+# Filter firms based on sectors that did well during hyperinflation and economic recessions
+sectors_that_did_well = ['Technology', 'Software', 'Hardware']
+filtered_firms = filtered_firms[filtered_firms['industry'].isin(sectors_that_did_well)]
+
+# Set the volatility of the portfolio within 10% annually
+filtered_firms = filtered_firms[filtered_firms['volatility'].apply(lambda x: float(x.strip('%')) / 100) < 0.1]
+
+# Display the filtered firms
+print(filtered_firms)
